@@ -28,28 +28,28 @@ types:
     type: object
     additionalProperties: false
     properties:
-      job_id: string
+      jobId: string
       status:
         type: string
         enum: [ queued, running, completed, failed ]
-      correlation_id: string
-      requested_by: string
-      source_type: string
-      log_object_uri?: string
+      correlationId: string
+      requestedBy: string
+      sourceType: string
+      logObjectUri?: string
       retryable: boolean
-      top_root_cause?: string
+      topRootCause?: string
       recommendations?: Recommendation[]
-      failure_code?: string
-      failure_reason?: string
-      created_at: datetime
-      updated_at: datetime
+      failureCode?: string
+      failureReason?: string
+      createdAt: datetime
+      updatedAt: datetime
   SubmitJobRequest:
     type: object
     additionalProperties: false
     properties:
-      source_type: string
-      requested_by: string
-      log_object_uri?: string
+      sourceType: string
+      requestedBy: string
+      logObjectUri?: string
       priority?:
         type: string
         enum: [ low, normal, high ]
@@ -57,16 +57,16 @@ types:
     type: object
     additionalProperties: false
     properties:
-      job_id: string
+      jobId: string
       status: string
-      correlation_id: string
+      correlationId: string
   Metrics:
     type: object
     additionalProperties: false
     properties:
-      requests_total: integer
-      jobs_submitted_total: integer
-      publish_failures_total: integer
+      requestsTotal: integer
+      jobsSubmittedTotal: integer
+      publishFailuresTotal: integer
 
 /analysis-jobs:
   post:
@@ -79,6 +79,13 @@ types:
         example: !include examples/post-analysis-jobs-request.raml
     responses:
       202:
+        description: Job accepted for processing
+        headers:
+          Content-Type:
+            required: false
+            enum: [application/json]
+            default: application/json
+            description: Response body is JSON per contract
         body:
           application/json:
             type: SubmitJobResponse
@@ -94,6 +101,13 @@ types:
       is: [ core-lib.errorResponse ]
       responses:
         200:
+          description: Current job lifecycle state
+          headers:
+            Content-Type:
+              required: false
+            enum: [application/json]
+            default: application/json
+            description: Response body is JSON per contract
           body:
             application/json:
               type: Job
@@ -106,6 +120,13 @@ types:
     is: [ core-lib.errorResponse ]
     responses:
       200:
+        description: Operational counters snapshot
+        headers:
+          Content-Type:
+            required: false
+            enum: [application/json]
+            default: application/json
+            description: Response body is JSON per contract
         body:
           application/json:
             type: Metrics

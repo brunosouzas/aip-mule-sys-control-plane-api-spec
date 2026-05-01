@@ -32,7 +32,7 @@ Key operations:
   - `postSysControlPlaneAnalysisJob`
   - `getSysControlPlaneAnalysisJobById`
   - `getSysControlPlaneMetrics`
-- Payload fields retain `job_id`, `status`, and `correlation_id` as canonical anchors.
+- JSON property names follow **camelCase** (Design Center Anypoint Best Practices). Canonical anchors include `jobId`, `status`, and `correlationId`.
 
 ## Security and Compliance Controls
 
