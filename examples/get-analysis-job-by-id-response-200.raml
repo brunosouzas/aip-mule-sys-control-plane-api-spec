@@ -1,0 +1,20 @@
+#%RAML 1.0 NamedExample
+{
+  "job_id": "job-6d106f67-61f6-4e41-9b5b-58f2bc4d35d8",
+  "status": "completed",
+  "correlation_id": "f2056847-0b5f-4f5b-86ed-e4f8fda7745b",
+  "requested_by": "integration-engineer",
+  "source_type": "orchestrated",
+  "log_object_uri": "s3://incident-bucket/case-1092",
+  "retryable": false,
+  "top_root_cause": "Timeout in upstream token service",
+  "recommendations": [
+    {
+      "title": "Increase upstream timeout",
+      "rationale": "Repeated timeout signature across retried calls",
+      "confidence": 0.84
+    }
+  ],
+  "created_at": "2026-05-01T09:20:00Z",
+  "updated_at": "2026-05-01T09:21:45Z"
+}

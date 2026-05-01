@@ -1,0 +1,118 @@
+#%RAML 1.0
+title: AIP Mule System Control Plane API
+version: v1
+baseUri: /api/v1
+mediaType: application/json
+protocols: [ HTTPS ]
+documentation:
+  - !include documentation.raml
+
+uses:
+  core-lib: exchange_modules/f29c19f9-a3b0-4a09-8da3-92b76caaac43/mule-utility-common-fragment/1.0.0/mule-utility-common-fragment.raml
+
+securedBy:
+  - core-lib.token
+
+description: |
+  Canonical System API contract for analysis job lifecycle management and control-plane metrics.
+
+types:
+  Recommendation:
+    type: object
+    additionalProperties: false
+    properties:
+      title: string
+      rationale: string
+      confidence: number
+  Job:
+    type: object
+    additionalProperties: false
+    properties:
+      job_id: string
+      status:
+        type: string
+        enum: [ queued, running, completed, failed ]
+      correlation_id: string
+      requested_by: string
+      source_type: string
+      log_object_uri?: string
+      retryable: boolean
+      top_root_cause?: string
+      recommendations?: Recommendation[]
+      failure_code?: string
+      failure_reason?: string
+      created_at: datetime
+      updated_at: datetime
+  SubmitJobRequest:
+    type: object
+    additionalProperties: false
+    properties:
+      source_type: string
+      requested_by: string
+      log_object_uri?: string
+      priority?:
+        type: string
+        enum: [ low, normal, high ]
+  SubmitJobResponse:
+    type: object
+    additionalProperties: false
+    properties:
+      job_id: string
+      status: string
+      correlation_id: string
+  Metrics:
+    type: object
+    additionalProperties: false
+    properties:
+      requests_total: integer
+      jobs_submitted_total: integer
+      publish_failures_total: integer
+
+/analysis-jobs:
+  post:
+    displayName: postSysControlPlaneAnalysisJob
+    description: Submit an analysis job and persist initial lifecycle state.
+    is: [ core-lib.errorResponse ]
+    body:
+      application/json:
+        type: SubmitJobRequest
+        example: !include examples/post-analysis-jobs-request.raml
+    responses:
+      202:
+        body:
+          application/json:
+            type: SubmitJobResponse
+            example: !include examples/post-analysis-jobs-response-202.raml
+
+  /{jobid}:
+    uriParameters:
+      jobid:
+        type: string
+    get:
+      displayName: getSysControlPlaneAnalysisJobById
+      description: Retrieve current lifecycle state for an analysis job.
+      is: [ core-lib.errorResponse ]
+      responses:
+        200:
+          body:
+            application/json:
+              type: Job
+              example: !include examples/get-analysis-job-by-id-response-200.raml
+
+/metrics:
+  get:
+    displayName: getSysControlPlaneMetrics
+    description: Return lightweight operational counters for the control-plane surface.
+    is: [ core-lib.errorResponse ]
+    responses:
+      200:
+        body:
+          application/json:
+            type: Metrics
+            example: !include examples/get-metrics-response-200.raml
+
+/health-check:
+  /alive:
+    type: core-lib.healthCheckAlive
+  /ready:
+    type: core-lib.healthCheckReady
