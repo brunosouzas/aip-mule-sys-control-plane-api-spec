@@ -82,6 +82,7 @@ types:
         description: Job accepted for processing
         headers:
           Content-Type:
+            type: string
             required: false
             enum: [application/json]
             default: application/json
@@ -104,10 +105,11 @@ types:
           description: Current job lifecycle state
           headers:
             Content-Type:
+              type: string
               required: false
-            enum: [application/json]
-            default: application/json
-            description: Response body is JSON per contract
+              enum: [application/json]
+              default: application/json
+              description: Response body is JSON per contract
           body:
             application/json:
               type: Job
@@ -123,6 +125,7 @@ types:
         description: Operational counters snapshot
         headers:
           Content-Type:
+            type: string
             required: false
             enum: [application/json]
             default: application/json
